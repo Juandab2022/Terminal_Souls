@@ -1,6 +1,5 @@
 import random
 
-# ======================
 # FUNCIONES
 # ======================
 
@@ -33,19 +32,19 @@ def turno_jugador(hp_jugador, hp_enemigo, pociones):
                 print("Te curaste 20 HP")
                 opcion_valida = True
             else:
-                print("⚠️ No tienes pociones, intenta otra opción")
+                print("No tienes pociones, intenta otra opción")
 
         elif opcion == "3":
             if random.random() < 0.5:
                 daño = generar_daño(30, 50)
                 hp_enemigo -= daño
-                print("💥 Habilidad especial:", daño)
+                print("Habilidad especial:", daño)
             else:
-                print("❌ Fallaste la habilidad")
+                print("Fallaste la habilidad")
             opcion_valida = True
 
         else:
-            print("❌ Opción inválida")
+            print("Opción inválida")
 
     return hp_jugador, hp_enemigo, pociones
 
@@ -57,7 +56,6 @@ def turno_enemigo(hp_jugador):
     return hp_jugador
 
 
-# ======================
 # MENÚ PRINCIPAL
 # ======================
 
@@ -71,7 +69,6 @@ while programa_activo:
 
     opcion_menu = input("Elige una opción: ")
 
-    # ======================
     # OPCIÓN: JUGAR
     # ======================
     if opcion_menu == "1":
@@ -81,9 +78,8 @@ while programa_activo:
         hp_enemigo = 120
         pociones = 3
 
-        print("\n🔥 ¡Comienza la batalla!")
+        print("\n¡Comienza la batalla!")
 
-        # ======================
         # BUCLE DEL JUEGO
         # ======================
 
@@ -103,19 +99,17 @@ while programa_activo:
 
         # RESULTADO
         if hp_jugador > 0:
-            print("🏆 ¡Ganaste!")
+            print("¡Ganaste!")
         else:
-            print("💀 Perdiste...")
+            print("Perdiste...")
 
-    # ======================
     # OPCIÓN: SALIR
     # ======================
     elif opcion_menu == "2":
-        print("👋 Saliendo del juego...")
+        print("Saliendo del juego...")
         programa_activo = False
 
-    # ======================
     # OPCIÓN INVÁLIDA
     # ======================
     else:
-        print("❌ Opción inválida, intenta otra vez")
+        print("Opción inválida, intenta otra vez")
