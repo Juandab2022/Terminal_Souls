@@ -1,6 +1,7 @@
 ⚔️ THE PVP - Console Combat Game
 
 📌 Description:
+
 This project is a turn-based combat game developed in Python, where the player controls a hero facing an enemy controlled by basic artificial intelligence.
 The objective is to defeat the enemy before the player's health reaches zero.
 
