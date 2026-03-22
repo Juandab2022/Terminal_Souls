@@ -1,115 +1,146 @@
 import random
+import time
 
-# FUNCIONES
-# ======================
+# FUNCTIONS
+# =============
 
 def damage_generated(minimum, maximum):
     return random.randint(minimum, maximum)
 
 
-def player_turn(hp_hero, hp_enemy, pociones):
+def life_bar(hp, hp_max):
+    length = 10
+    full = int((hp / hp_max) * length)
+    empty = length - full
+    return "[" + "♡" * full + "-" * empty + "]"
 
-    opcion_valida = False
 
-    while opcion_valida == False:
+def show_status(hp_hero, hp_enemy, hp_max_hero, hp_max_enemy, potions):
+    print("\n===⛩︎ STATE ⛩︎===")
+    print(f"Hero:   {life_bar(hp_hero, hp_max_hero)} {hp_hero} HP")
+    print(f"Enemigo: {life_bar(hp_enemy, hp_max_enemy)} {hp_enemy} HP")
+    print(f"Pociones: {potions} ")
 
-        print("\n1. Atacar")
-        print("2. Curar")
-        print("3. Habilidad especial")
 
-        opcion = input("Elige: ")
+def hero_turn(hp_hero, hp_enemy, potions):
 
-        if opcion == "1":
-            daño = damage_generated(10, 25)
-            hp_enemy -= daño
-            print("Hiciste", daño, "de daño")
-            opcion_valida = True
+    valid_option = False
 
-        elif opcion == "2":
-            if pociones > 0:
+    while not valid_option:
+
+        print("\n1.Attack")
+        print("2.Cure")
+        print("3.Special ability")
+
+        option = input("Which one do you want to choose: ")
+
+        if option == "1":
+            damage = damage_generated(10, 25)
+            hp_enemy -= damage
+            print(f"⚔︎ Your hit inflicted {damage} points of damage ⚔︎")
+            valid_option = True
+
+        elif option == "2":
+            if potions > 0:
                 hp_hero += 20
-                pociones -= 1
-                print("Te curaste 20 HP")
-                opcion_valida = True
+                potions -= 1
+                print("⚱︎ You healed 20 HP")
+                valid_option = True
             else:
-                print("No tienes pociones, intenta otra opción")
+                print("✖︎ You've run out of potions ✖︎")
 
-        elif opcion == "3":
+        elif option == "3":
             if random.random() < 0.5:
-                daño = damage_generated(30, 50)
-                hp_enemy -= daño
-                print("Habilidad especial:", daño)
+                damage = damage_generated(30, 50)
+                hp_enemy -= damage
+                print(f"☄︎ The special ability was activated, you inflicted {damage} points of damage ☄︎")
             else:
-                print("Fallaste la habilidad")
-            opcion_valida = True
+                print("⤵︎ Special ability activation failed")
+            valid_option = True
 
         else:
-            print("Opción inválida")
+            print("✖︎ Invalid option, please try again ✖︎")
 
-    return hp_hero, hp_enemy, pociones
-
-
-def turno_enemigo(hp_jugador):
-    daño = damage_generated(15, 20)
-    hp_jugador -= daño
-    print("El enemigo te hace", daño, "de daño")
-    return hp_jugador
+    return hp_hero, hp_enemy, potions
 
 
-# MENÚ PRINCIPAL
-# ======================
+def enemy_turn(hp_hero, hp_enemy, hp_max_enemy):
 
-programa_activo = False
+    
+    if hp_enemy < 0.2 * hp_max_enemy:
+        if random.random() < 0.5:
+            hp_enemy += 15
+            print("⚱︎ The enemy healed for 15 HP")
+            return hp_hero, hp_enemy
 
-while programa_activo == False:
+    damage = damage_generated(15, 20)
+    hp_hero -= damage
+    print(f"☢︎ The enemy inflicted {damage} points of damage on you ☢︎")
 
-    print("\n=== THE PVP ===")
-    print("1. Jugar")
-    print("2. Salir")
+    return hp_hero, hp_enemy
 
-    opcion_menu = input("Elige una opción: ")
 
-    # OPCIÓN: JUGAR
-    # ======================
-    if opcion_menu == "1":
+def winner_verfication(hp_hero, hp_enemy):
+    if hp_hero <= 0:
+        print("\n☠︎You lost...☠︎")
+        exit()
+        return True
+    elif hp_enemy <= 0:
+        print("\n♚ You won! ♚")
+        exit()
+        return True
+    return False
 
-        # VARIABLES DEL JUEGO
-        hp_jugador = 100
-        hp_enemigo = 120
-        pociones = 3
 
-        print("\n¡Let the Battle Begin!")
 
-        # BUCLE DEL JUEGO
-        # ======================
+# MAIN MENU
+# =============
 
-        while hp_jugador > 0 and hp_enemigo > 0:
+active_program = True
 
-            print("\n--- NEW SHIFT ---")
-            print("Tu vida:", hp_jugador)
-            print("Vida enemigo:", hp_enemigo)
-            print("Pociones:", pociones)
+while active_program:
 
-            hp_jugador, hp_enemigo, pociones = player_turn(
-                hp_jugador, hp_enemigo, pociones
+    print("\n==⚔︎ THE PVP ⚔︎==")
+    print("1.Start Playing☑")
+    print("2.Exit the Game☒")
+
+    menu_option = input("choose an option: ")
+
+    if menu_option == "1":
+
+        hp_hero = 100
+        hp_enemy = 120
+        potions = 3
+        hp_max_hero = 100
+        hp_max_enemy = 120
+
+        print("\n✴︎ ¡Let the battle begin! ✴︎")
+
+        while hp_hero > 0 and hp_enemy > 0:
+
+            show_status(
+                hp_hero, hp_enemy, hp_max_hero, hp_max_enemy, potions
             )
 
-            if hp_enemigo > 0:
-                hp_jugador = turno_enemigo(hp_jugador)
+            hp_hero, hp_enemy, potions = hero_turn(
+                hp_hero, hp_enemy, potions
+            )
 
-        # RESULTADO
-        if hp_jugador > 0:
-            print("¡Ganaste!")
-        else:
-            print("Perdiste...")
+            winner_verfication(hp_hero, hp_enemy)
 
-    # OPCIÓN: SALIR
-    # ======================
-    elif opcion_menu == "2":
-        print("Saliendo del juego...")
-        programa_activo = True
+            if hp_enemy > 0:
+                 hp_hero, hp_enemy = enemy_turn(
+                 hp_hero , hp_enemy , hp_max_enemy
+                 )
+                 winner_verfication(hp_hero, hp_enemy)
+                 
+                 
+               
 
-    # OPCIÓN INVÁLIDA
-    # ======================
+    elif menu_option == "2":
+        print("Leaving...⏱︎")
+        time.sleep(1.5)
+        active_program = False
+
     else:
-        print("Opción inválida, intenta otra vez")
+        print("✖︎ Invalid option, please try again ✖︎")
